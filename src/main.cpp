@@ -5,9 +5,6 @@
 unsigned int cpt = 0;
 DS3231 Clock;
 
-bool century = false;
-bool am_pm = false, h12 = false;
-
 byte Year;
 byte Month;
 byte Date;
@@ -72,18 +69,36 @@ void GetDateStuff(byte &Year, byte &Month, byte &Day, byte &DoW,
 
 void printDateTime()
 {
-	bool b;
-	Serial.print(Clock.getHour());
+	String listOfDays[] = {"indice 0", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"};
+	String listOfMonth[] = {"indice 0", "Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"};
+
+	// Refresh Date Hour
+	DoW = Clock.getDoW();
+	Date = Clock.getDate();
+	Month = Clock.getMonth();
+	Year = Clock.getYear();
+	Hour = Clock.getHour();
+	Minute = Clock.getMinute();
+	Second = Clock.getSecond();
+
+	Serial.print(listOfDays[DoW] + " ");
+	Serial.print(DoW + " ");
+	Serial.print(listOfMonth[Month] + " ");
+	Serial.print(Year + " ");
+
+	Serial.print(Hour);
 	Serial.print("H ");
-	Serial.print(Clock.getMinute());
+	Serial.print(Minute);
 	Serial.print("M ");
-	Serial.print(Clock.getSecond());
-	Serial.print("s - ");
-	Serial.print(Clock.getDate());
+	Serial.print(Second);
+	Serial.print("s - [");
+
+	Serial.print(Date);
 	Serial.print("/");
-	Serial.print(Clock.getMonth(b));
+	Serial.print(Month);
 	Serial.print("/");
-	Serial.println(Clock.getYear());
+	Serial.print(Year);
+	Serial.println("]");
 }
 
 void setup()

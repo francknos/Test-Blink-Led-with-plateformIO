@@ -1,0 +1,73 @@
+{
+    "name": "DS3231", 
+    "version": "1.0.2", 
+    "keywords": [
+        "timing"
+    ], 
+    "description": "Arduino library for the DS3231 real-time clock (RTC)", 
+    "frameworks": [
+        "arduino"
+    ], 
+    "platforms": [
+        "atmelavr", 
+        "atmelsam", 
+        "espressif32", 
+        "espressif8266", 
+        "intel_arc32", 
+        "microchippic32", 
+        "nordicnrf51", 
+        "nordicnrf52", 
+        "ststm32", 
+        "teensy", 
+        "timsp430"
+    ], 
+    "authors": [
+        {
+            "email": "awickert@umn.edu", 
+            "url": null, 
+            "maintainer": true, 
+            "name": "Andrew Wickert"
+        }, 
+        {
+            "email": null, 
+            "url": null, 
+            "maintainer": false, 
+            "name": "Eric Ayars"
+        }, 
+        {
+            "email": null, 
+            "url": null, 
+            "maintainer": false, 
+            "name": "Jean-Claude Wippler"
+        }, 
+        {
+            "email": "info@northernwidget.com", 
+            "url": null, 
+            "maintainer": false, 
+            "name": "Northern Widget LLC"
+        },
+        {
+            "email": "francknos@gmail.com", 
+            "url": null, 
+            "maintainer": false, 
+            "name": "Franck FURIC"
+        }
+    ], 
+    "repository": {
+        "type": "git", 
+        "url": "https://github.com/NorthernWidget/DS3231"
+    }, 
+    "homepage": null, 
+    "export": {
+        "include": null, 
+        "exclude": [
+            "extras", 
+            "docs", 
+            "tests", 
+            "test", 
+            "*.doxyfile", 
+            "*.pdf"
+        ]
+    }, 
+    "id": 1379
+}
