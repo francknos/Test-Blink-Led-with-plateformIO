@@ -81,10 +81,14 @@ void printDateTime()
 	Minute = Clock.getMinute();
 	Second = Clock.getSecond();
 
-	Serial.print(listOfDays[DoW] + " ");
-	Serial.print(DoW + " ");
-	Serial.print(listOfMonth[Month] + " ");
-	Serial.print(Year + " ");
+	Serial.print(listOfDays[DoW]);
+	Serial.print(" ");
+	Serial.print(DoW);
+	Serial.print(" ");
+	Serial.print(listOfMonth[Month]);
+	Serial.print(" 20");
+	Serial.print(Year);
+	Serial.print(" <> ");
 
 	Serial.print(Hour);
 	Serial.print("H ");
@@ -128,7 +132,7 @@ void loop()
 
 	delay(1000);
 	
-	if (Clock.available())
+	if(Clock.available())
 	{
 		printDateTime();
 

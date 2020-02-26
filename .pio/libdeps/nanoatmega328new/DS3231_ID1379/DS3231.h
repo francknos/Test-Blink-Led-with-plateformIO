@@ -63,6 +63,7 @@ class DS3231 {
 		//Constructor
 		DS3231();
 
+		bool available();
 		// Time-retrieval functions
 		// the get*() functions retrieve current values of the registers.
 		byte getSecond(); 

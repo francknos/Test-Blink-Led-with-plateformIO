@@ -35,6 +35,17 @@ DS3231::DS3231() {
 	// nothing to do for this constructor.
 }
 
+bool DS3231::available()
+{
+	Wire.beginTransmission(CLOCK_ADDRESS);
+	Wire.write(0x00);
+	Wire.endTransmission();
+
+	Wire.requestFrom(CLOCK_ADDRESS, 1);
+
+	return (Wire.available()==1) ? true : false;
+}
+
 // Utilities from JeeLabs/Ladyada
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -259,6 +270,46 @@ byte DS3231::getYear() {
 
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
 	return bcdToDec(Wire.read());
+}
+
+void DS3231::printDateTime()
+{
+	String listOfDays[] = {"idx_0", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Satruday", "Sunday"};
+	String listOfMonth[] = {"idx_0", "January", "February", "MArch", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+	// Refresh Date Hour
+	byte DoW = getDoW();
+	byte Date = getDate();
+	byte Month = getMonth();
+	byte Year = getYear();
+	byte Hour = getHour();
+	byte Minute = getMinute();
+	byte Second = getSecond();
+
+	Serial.print(listOfDays[DoW]);
+	Serial.print(" ");
+	Serial.print(DoW);
+	Serial.print(" ");
+	Serial.print(listOfMonth[Month]);
+	Serial.print(" 20");
+	Serial.print(Year);
+	Serial.print(" <> ");
+
+	Serial.print(Hour);
+	Serial.print("H ");
+	Serial.print(Minute);
+	Serial.print("M ");
+	Serial.print(Second);
+	Serial.print("s - [");
+
+	Serial.print(Date);
+	Serial.print("/");
+	Serial.print(Month);
+	Serial.print("/");
+	Serial.print(Year);
+	Serial.println("]");
+
+	return;
 }
 
 void DS3231::setSecond(byte Second) {
@@ -692,42 +743,6 @@ bool DS3231::oscillatorCheck() {
 		result = false;
 	}
 	return result;
-}
-
-void DS3231::printDateTime()
-{
-	String listOfDays[] = {"idx_0", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Satruday", "Sunday"};
-	String listOfMonth[] = {"idx_0", "January", "February", "MArch", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-
-	// Refresh Date Hour
-	byte DoW = getDoW();
-	byte Date = getDate();
-	byte Month = getMonth();
-	byte Year = getYear();
-	byte Hour = getHour();
-	byte Minute = getMinute();
-	byte Second = getSecond();
-
-	Serial.print(listOfDays[DoW] + " ");
-	Serial.print(DoW + " ");
-	Serial.print(listOfMonth[Month] + " ");
-	Serial.print(Year + " ");
-
-	Serial.print(Hour);
-	Serial.print("H ");
-	Serial.print(Minute);
-	Serial.print("M ");
-	Serial.print(Second);
-	Serial.print("s - [");
-
-	Serial.print(Date);
-	Serial.print("/");
-	Serial.print(Month);
-	Serial.print("/");
-	Serial.print(Year);
-	Serial.println("]");
-
-	return;
 }
 
 /***************************************** 
