@@ -13,6 +13,7 @@ byte Hour;
 byte Minute;
 byte Second;
 
+
 void GetDateStuff(byte &Year, byte &Month, byte &Day, byte &DoW,
 				  byte &Hour, byte &Minute, byte &Second)
 {
@@ -111,7 +112,7 @@ void setup()
 	pinMode(LED_BUILTIN, OUTPUT);
 
 	Serial.begin(9600);
-	Wire.begin();
+	Clock.begin();
 }
 
 void loop()

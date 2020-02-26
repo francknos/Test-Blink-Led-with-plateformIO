@@ -35,6 +35,10 @@ DS3231::DS3231() {
 	// nothing to do for this constructor.
 }
 
+void DS3231::begin(){
+	Wire.begin();
+}
+
 bool DS3231::available()
 {
 	Wire.beginTransmission(CLOCK_ADDRESS);

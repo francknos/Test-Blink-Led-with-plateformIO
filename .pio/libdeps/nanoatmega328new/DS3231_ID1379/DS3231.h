@@ -62,6 +62,7 @@ class DS3231 {
 	public:
 		//Constructor
 		DS3231();
+		void begin();
 
 		bool available();
 		// Time-retrieval functions
