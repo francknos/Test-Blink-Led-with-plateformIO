@@ -5,6 +5,9 @@
 unsigned int cpt = 0;
 DS3231 Clock;
 
+short NB_LED_BANDEAU = 8;
+Adafruit_NeoPixel ledBandeau = Adafruit_NeoPixel(NB_LED_BANDEAU, 7, NEO_GRB + NEO_KHZ800);
+
 byte Year;
 byte Month;
 byte Date;
@@ -111,6 +114,11 @@ void setup()
 	// put your setup code here, to run once:
 	pinMode(LED_BUILTIN, OUTPUT);
 
+	ledBandeau.begin();
+	ledBandeau.setBrightness(30);
+	ledBandeau.clear();
+	ledBandeau.show();
+
 	Serial.begin(9600);
 	Clock.begin();
 }
@@ -137,10 +145,35 @@ void loop()
 	{
 		printDateTime();
 
+		double temp = Clock.getTemperature();
+
+		ledBandeau.clear();
+		for(int i=0 ; i<ledBandeau.numPixels() ; i++)
+		{
+			if(temp> (i*0.25+21))
+				ledBandeau.setPixelColor(i, i*(255/8), (7-i)*(255/8) , 0);
+			else
+				ledBandeau.setPixelColor(i, 0);	
+		}
+		ledBandeau.show();
+
 		Serial.print("Température: ");
-		Serial.println(Clock.getTemperature());
+		Serial.println(temp);
 		Serial.println("");
-	}else{
+	}
+	else
+	{
 		Serial.println("Capteur DS3231 is not avalible.");
+
+		for (int i = 0; i<10; i++)
+		{
+			if (i % 2 == 0)
+				ledBandeau.fill(ledBandeau.Color(255, 0, 0), 0, 8);
+			else
+				ledBandeau.fill(ledBandeau.Color(0, 0, 0), 0, 8);
+
+			ledBandeau.show();
+			delay(50);
+		}
 	}
 }
