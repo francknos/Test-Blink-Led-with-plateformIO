@@ -5,8 +5,12 @@
 unsigned int cpt = 0;
 DS3231 Clock;
 
-short NB_LED_BANDEAU = 8;
-Adafruit_NeoPixel ledBandeau = Adafruit_NeoPixel(NB_LED_BANDEAU, 7, NEO_GRB + NEO_KHZ800);
+short NB_LED_BANDEAU 	= 14;
+short PIN_LED_HOURS 	=  6;
+Adafruit_NeoPixel ledBandeau = Adafruit_NeoPixel(NB_LED_BANDEAU, PIN_LED_HOURS, NEO_GRBW + NEO_KHZ800);
+
+void printNumber(int num, uint32_t couleur);
+void black();
 
 byte Year;
 byte Month;
@@ -16,6 +20,18 @@ byte Hour;
 byte Minute;
 byte Second;
 
+//					   0 1 2 3 4 5 6 7 8 9 10 11 12 13	
+int number[10][14] = {{0,0,1,1,1,1,1,1,1,1, 1, 1, 1, 1},//0
+					  {0,0,0,0,0,0,1,1,1,1, 0, 0, 0, 0},//1
+					  {1,1,0,0,1,1,1,1,0,0, 1, 1, 1, 1},//2
+					  {1,1,0,0,1,1,1,1,1,1, 1, 1, 0, 0},//3
+					  {1,1,1,1,0,0,1,1,1,1, 0, 0, 0, 0},//4
+					  {1,1,1,1,1,1,0,0,1,1, 1, 1, 0, 0},//5
+					  {1,1,1,1,1,1,0,0,1,1, 1, 1, 1, 1},//6
+					  {0,0,0,0,1,1,1,1,1,1, 0, 0, 0, 0},//7
+					  {1,1,1,1,1,1,1,1,1,1, 1, 1, 1, 1},//8
+					  {1,1,1,1,1,1,1,1,1,1, 1, 1, 0, 0} //9
+					  };
 
 void GetDateStuff(byte &Year, byte &Month, byte &Day, byte &DoW,
 				  byte &Hour, byte &Minute, byte &Second)
@@ -115,7 +131,7 @@ void setup()
 	pinMode(LED_BUILTIN, OUTPUT);
 
 	ledBandeau.begin();
-	ledBandeau.setBrightness(30);
+	ledBandeau.setBrightness(40);
 	ledBandeau.clear();
 	ledBandeau.show();
 
@@ -148,7 +164,7 @@ void loop()
 		double temp = Clock.getTemperature();
 
 		ledBandeau.clear();
-		for(int i=0 ; i<ledBandeau.numPixels() ; i++)
+		for(int i=0 ; i<(int)ledBandeau.numPixels() ; i++)
 		{
 			if(temp> (i*0.25+21))
 				ledBandeau.setPixelColor(i, i*(255/8), (7-i)*(255/8) , 0);
@@ -160,20 +176,71 @@ void loop()
 		Serial.print("Température: ");
 		Serial.println(temp);
 		Serial.println("");
-	}
-	else
-	{
+	}else{
+
+		// Pas de capteur RTC
 		Serial.println("Capteur DS3231 is not avalible.");
 
+		int pause = 100;
+		// Rouge
 		for (int i = 0; i<10; i++)
 		{
-			if (i % 2 == 0)
-				ledBandeau.fill(ledBandeau.Color(255, 0, 0), 0, 8);
-			else
-				ledBandeau.fill(ledBandeau.Color(0, 0, 0), 0, 8);
+			printNumber(i, ledBandeau.Color(255,0,0));
+			delay(pause);
+		}
+		black();
+		delay(500);
 
-			ledBandeau.show();
-			delay(50);
+		// Vert
+		for (int i = 0; i<10; i++)
+		{
+			printNumber(i, ledBandeau.Color(0,255,0));
+			delay(pause);
+		}
+		black();
+		delay(500);
+
+		// bleu
+		for (int i = 0; i<10; i++)
+		{
+			printNumber(i, ledBandeau.Color(0,0,255));
+			delay(pause);
+		}
+		black();
+		delay(500);
+
+		// BLANC
+		for (int i = 0; i<10; i++)
+		{
+			printNumber(i, ledBandeau.Color(0,0,0,255));
+			delay(pause);
+		}
+		black();
+	}
+}
+
+
+void black()
+{
+	ledBandeau.fill(0, 0, ledBandeau.numPixels());
+	ledBandeau.show();
+}
+void printNumber(int num, uint32_t couleur)
+{
+
+	if (num < 0 || num > 9)
+		return;
+
+	for (int i = 0; i < ledBandeau.numPixels(); i++)
+	{
+		if (number[num][i] == 1)
+		{
+			ledBandeau.setPixelColor(i, couleur);
+		}
+		else
+		{
+			ledBandeau.setPixelColor(i, 0);
 		}
 	}
+	ledBandeau.show();
 }
