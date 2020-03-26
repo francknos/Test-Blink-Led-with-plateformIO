@@ -1,5 +1,6 @@
+#ifndef DIGIT_H
+#define DIGIT_H
 #include <Adafruit_NeoPixel.h>
-
 
 /**
  * This Class is composed of 2 digits (88) 28 leds
@@ -18,6 +19,7 @@
     9          12
        10  11
 */
+
 
 int converter[10][14] = {
    //0  1  2  3  4  5  6  7  8  9 10  11  12  13
@@ -46,8 +48,15 @@ public:
     ~Digit();
     void begin();
     void setBrightness(uint8_t b);
-    void black(short start=0, short nbLed=-1 /*-1 => numPixel*/);
+    void black(short start = 0, short nbLed = -1 /*-1 => numPixel*/);
     void printNumber(short num, uint32_t color);
+
+    //Next function directly take from Adafuit;
+    static uint32_t Color(uint8_t r, uint8_t g, uint8_t b) { return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b; }
+    static uint32_t Color(uint8_t r, uint8_t g, uint8_t b, uint8_t w) { return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | b; }
+    static uint32_t ColorHSV(uint16_t hue, uint8_t sat = 255, uint8_t val = 255) { return Adafruit_NeoPixel::ColorHSV(hue, sat, val); }
+    static uint32_t gamma32(uint32_t x) { return Adafruit_NeoPixel::gamma32(x); }
+    static uint8_t gamma8(uint8_t x) { return Adafruit_NeoPixel::gamma8(x); }
 };
 
 Digit::Digit(short pinLed, short numPixel)
@@ -125,3 +134,5 @@ void Digit::printNumber(short num, uint32_t color)
 Digit::~Digit()
 {
 }
+
+#endif // DIGIT_H
