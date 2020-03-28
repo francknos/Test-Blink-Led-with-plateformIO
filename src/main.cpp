@@ -116,6 +116,7 @@ void setup()
 	pinMode(LED_BUILTIN, OUTPUT);
 
 	ledHours.begin();
+	ledHours.setPrintDizaine(false);
 	Serial.begin(9600);
 	Clock.begin();
 }
@@ -141,30 +142,18 @@ void loop()
 	if(Clock.available())
 	{
 		printDateTime();
-
 		double temp = Clock.getTemperature();
-
-		/*ledBandeau.clear();
-		for(int i=0 ; i<(int)ledBandeau.numPixels() ; i++)
-		{
-			if(temp> (i*0.25+21))
-				ledBandeau.setPixelColor(i, i*(255/8), (7-i)*(255/8) , 0);
-			else
-				ledBandeau.setPixelColor(i, 0);	
-		}
-		ledBandeau.show();
-*/
 		Serial.print("Température: ");
 		Serial.println(temp);
 		Serial.println("");
 	}else{
-
 		// Pas de capteur RTC
 		Serial.println("Capteur DS3231 is not avalible.");
+		int pause = 150;
+		int max = 100;
 
-		int pause = 100;
 		// Rouge
-		for (int i = 0; i<10; i++)
+		for (int i = 0; i<max; i++)
 		{
 			ledHours.printNumber(i, Digit::Color(255, 0, 0) );
 			delay(pause);
@@ -173,29 +162,39 @@ void loop()
 		delay(500);
 
 		// Vert
-		for (int i = 0; i<10; i++)
+		for (int i = 0; i<max; i++)
 		{
 			ledHours.printNumber(i, Digit::Color(0, 255, 0) );
-			delay(pause);
+			delay(pause/2);
 		}
 		ledHours.black();
-		delay(500);
+		delay(pause);
 
 		// bleu
-		for (int i = 0; i<10; i++)
+		for (int i = 0; i<max; i++)
 		{
-			ledHours.printNumber(i, Digit::Color(0, 0, 255) );
-			delay(pause);
+			ledHours.printNumber(i, Digit::Color(255, 0, 180) );
+			delay(pause/2);
 		}
 		ledHours.black();
-		delay(500);
+		delay(pause);
 
 		// BLANC
-		for (int i = 0; i<10; i++)
+		for (int i = 0; i<max; i++)
 		{
 			ledHours.printNumber(i, Digit::Color(0, 0, 0, 255) );
-			delay(pause);
+			delay(pause/2);
 		}
 		ledHours.black();
+		delay(pause);
+
+
+		// ALEATOIRE
+		for (int i = 0; i<max; i++)
+		{
+			ledHours.printNumber(random(99), Digit::Color(random(255),random(255),random(255) ) );
+			delay(pause);
+		}
+
 	}
 }

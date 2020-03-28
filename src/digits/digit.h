@@ -11,28 +11,26 @@
 
 //Converter to indicate which pixels need to be showing for 7 segments digit
 /* Cablage suivant
-        5   4
-    6           3
-    7           2
-        0   1
-    8          13
-    9          12
-       10  11
+       11  10
+   12           9
+   13           8
+        1   0
+    2           7
+    3           6
+        4   5
 */
-
-
 int converter[10][14] = {
    //0  1  2  3  4  5  6  7  8  9 10  11  12  13
     {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,  1,  1,  1}, //0
     {0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0,  0,  0,  0}, //1
-    {1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1,  1,  1,  1}, //2
+    {1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1,  1,  0,  0}, //2
     {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1,  1,  0,  0}, //3
-    {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0,  0,  0,  0}, //4
-    {1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1,  1,  0,  0}, //5
-    {1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1,  1,  1,  1}, //6
-    {0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0,  0,  0,  0}, //7
+    {1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0,  0,  1,  1}, //4
+    {1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1,  1,  1,  1}, //5
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,  1,  1,  1}, //6
+    {0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,  1,  0,  0}, //7
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  1,  1,  1}, //8
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  1,  0,  0}  //9
+    {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1,  1,  1,  1}  //9
 };
 
 class Digit
@@ -47,9 +45,15 @@ public:
     Digit(short pinLed, short nbDigits);
     ~Digit();
     void begin();
-    void setBrightness(uint8_t b);
     void black(short start = 0, short nbLed = -1 /*-1 => numPixel*/);
     void printNumber(short num, uint32_t color);
+    void fill(uint16_t first, uint16_t nb, uint32_t color);
+
+// Accesseurs
+    void    setBrightness(uint8_t b) { _bright = b; _led.setBrightness(_bright); }
+    uint8_t getBrigthness() { return _bright; }
+    void    setPrintDizaine(bool b=true) { _printDizaine = b; }
+    bool    getPrintDizaine() { return _printDizaine; }
 
     //Next function directly take from Adafuit;
     static uint32_t Color(uint8_t r, uint8_t g, uint8_t b) { return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b; }
@@ -63,7 +67,7 @@ Digit::Digit(short pinLed, short numPixel)
 {
     _printDizaine = true;
     _numPixels = numPixel;
-    _bright = 10;
+    _bright = 30;
     _led = Adafruit_NeoPixel(_numPixels, pinLed, NEO_GRBW + NEO_KHZ800);
 }
 
@@ -81,11 +85,8 @@ void Digit::black(short start, short nbLed /*-1 => numPixel*/)
         _led.fill(0, 0, _numPixels);
     else
         _led.fill(0, start, nbLed);
-}
 
-void Digit::setBrightness(uint8_t b)
-{
-    _led.setBrightness(b);
+    _led.show();
 }
 
 void Digit::printNumber(short num, uint32_t color)
@@ -95,7 +96,6 @@ void Digit::printNumber(short num, uint32_t color)
 
     short dizaine = num/10;
     short unitee = num%10;
-
     short nbPixelsDigit = _numPixels/2;
 
     //Unité
@@ -112,11 +112,11 @@ void Digit::printNumber(short num, uint32_t color)
     }
 
     //dizaine
-    if (_printDizaine)
+    if (dizaine != 0 || _printDizaine)
     {
-        for (int i = nbPixelsDigit; i < nbPixelsDigit; i++)
+        for (int i = nbPixelsDigit; i < _numPixels; i++)
         {
-            if (converter[dizaine][i] == 1)
+            if (converter[dizaine][i%nbPixelsDigit] == 1)
             {
                 _led.setPixelColor(i, color);
             }
@@ -131,8 +131,13 @@ void Digit::printNumber(short num, uint32_t color)
     _led.show();
 }
 
-Digit::~Digit()
+void Digit::fill(uint16_t first, uint16_t nb, uint32_t color)
 {
+    _led.fill(color, first, nb);
+    _led.show();
 }
+
+Digit::~Digit()
+{}
 
 #endif // DIGIT_H
