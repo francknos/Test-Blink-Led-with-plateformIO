@@ -38,22 +38,25 @@ class Digit
 private:
     Adafruit_NeoPixel _led;
     short _bright;
-    short _numPixels;
+    int _numPixels;
     bool _printDizaine;
 
 public:
-    Digit(short pinLed, short nbDigits);
+    Digit(int pinLed, int nbDigits);
     ~Digit();
     void begin();
-    void black(short start = 0, short nbLed = -1 /*-1 => numPixel*/);
+    void black(int start = 0, int nbLed = -1 /*-1 => numPixel*/);
     void printNumber(short num, uint32_t color);
     void fill(uint16_t first, uint16_t nb, uint32_t color);
+    void setPixelColor(uint16_t idx, uint32_t color);
 
 // Accesseurs
     void    setBrightness(uint8_t b) { _bright = b; _led.setBrightness(_bright); }
     uint8_t getBrigthness() { return _bright; }
     void    setPrintDizaine(bool b=true) { _printDizaine = b; }
     bool    getPrintDizaine() { return _printDizaine; }
+    int     getNumPixel() { return _numPixels; }
+    
 
     //Next function directly take from Adafuit;
     static uint32_t Color(uint8_t r, uint8_t g, uint8_t b) { return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b; }
@@ -63,7 +66,7 @@ public:
     static uint8_t gamma8(uint8_t x) { return Adafruit_NeoPixel::gamma8(x); }
 };
 
-Digit::Digit(short pinLed, short numPixel)
+Digit::Digit(int pinLed, int numPixel)
 {
     _printDizaine = true;
     _numPixels = numPixel;
@@ -79,7 +82,7 @@ void Digit::begin()
     _led.show();
 }
 
-void Digit::black(short start, short nbLed /*-1 => numPixel*/)
+void Digit::black(int start, int nbLed /*-1 => numPixel*/)
 {
     if(nbLed<=0)
         _led.fill(0, 0, _numPixels);
@@ -134,6 +137,12 @@ void Digit::printNumber(short num, uint32_t color)
 void Digit::fill(uint16_t first, uint16_t nb, uint32_t color)
 {
     _led.fill(color, first, nb);
+    _led.show();
+}
+
+void Digit::setPixelColor(uint16_t idx, uint32_t color)
+{
+    _led.setPixelColor(idx, color);
     _led.show();
 }
 

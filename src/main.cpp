@@ -19,8 +19,7 @@ byte Second;
 
 
 void GetDateStuff(byte &Year, byte &Month, byte &Day, byte &DoW,
-				  byte &Hour, byte &Minute, byte &Second)
-{
+				  byte &Hour, byte &Minute, byte &Second){
 	// Call this if you notice something coming in on
 	// the serial port. The stuff coming in should be in
 	// the order YYMMDDwHHMMSS, with an 'x' at the end.
@@ -72,8 +71,7 @@ void GetDateStuff(byte &Year, byte &Month, byte &Day, byte &DoW,
 	Second = Temp1 * 10 + Temp2;
 }
 
-void printDateTime()
-{
+void printDateTime(){
 	String listOfDays[] = {"indice 0", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"};
 	String listOfMonth[] = {"indice 0", "Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"};
 
@@ -183,18 +181,43 @@ void loop()
 		for (int i = 0; i<max; i++)
 		{
 			ledHours.printNumber(i, Digit::Color(0, 0, 0, 255) );
-			delay(pause/2);
+			delay(pause / 2);
 		}
 		ledHours.black();
 		delay(pause);
 
-
-		// ALEATOIRE
-		for (int i = 0; i<max; i++)
+		//chenillard
+		for (int i = 0; i < ledHours.getNumPixel(); i++)
 		{
-			ledHours.printNumber(random(99), Digit::Color(random(255),random(255),random(255) ) );
-			delay(pause);
+			ledHours.setPixelColor(i, Digit::Color(200, 40, 80));
+			delay(pause/2);
+		}
+		for (int i = ledHours.getNumPixel()-1; i >=0; i--)
+		{
+			ledHours.setPixelColor(i,0);
+			delay(pause/4);
 		}
 
+		for (int i = 0; i < ledHours.getNumPixel(); i++)
+		{
+			ledHours.setPixelColor(i, Digit::Color(40, 200, 80));
+			delay(pause/4);
+		}
+		for (int i = ledHours.getNumPixel()-1; i >=0; i--)
+		{
+			ledHours.setPixelColor(i,0);
+			delay(pause/6);
+		}
+
+		for (int i = 0; i < ledHours.getNumPixel(); i++)
+		{
+			ledHours.setPixelColor(i, Digit::Color(40, 80, 200));
+			delay(pause/6);
+		}
+		for (int i = ledHours.getNumPixel()-1; i >=0; i--)
+		{
+			ledHours.setPixelColor(i,0);
+			delay(pause/8);
+		}
 	}
 }
